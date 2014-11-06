@@ -10,12 +10,12 @@ using namespace std;
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Event Event;
-SDL_Texture *background,*game_background, *pelotita_buena, *pelotita_mala, *gameover_background;
-SDL_Rect rect_background, rect_pelotita, rect_gameover_background;
+SDL_Texture *background,*background2,*game_background,*game_background2, *pelotita_buena, *pelotita_mala, *gameover_background;
+SDL_Rect rect_background,rect_background2, rect_pelotita, rect_gameover_background;
 int boom;
 
 void gameover(){
-    //Main Loop
+
     while(true)
     {
         while(SDL_PollEvent(&Event))
@@ -34,7 +34,7 @@ void gameover(){
 
         }
 
-        SDL_RenderCopy(renderer, background, NULL, &rect_background);
+        SDL_RenderCopy(renderer, background2, NULL, &rect_background2);
         SDL_RenderPresent(renderer);
     }
 }
@@ -178,11 +178,21 @@ int main( int argc, char* args[] )
     rect_background.w = w;
     rect_background.h = h;
 
-    game_background = IMG_LoadTexture(renderer,"assets/background.png");
+ game_background = IMG_LoadTexture(renderer,"assets/background.png");
 
+
+    //cargar imagen nueva
+    background2 = IMG_LoadTexture(renderer,"assets/game_over.png");
+    SDL_QueryTexture(background2, NULL, NULL, &w, &h);
+    rect_background2.x = 0;
+    rect_background2.y = 0;
+    rect_background2.w = w;
+    rect_background2.h = h;
+
+//
     pelotita_buena = IMG_LoadTexture(renderer,"assets/pelotita_buena.png");
     pelotita_mala = IMG_LoadTexture(renderer,"assets/pelotita_mala.png");
-    gameover_background = IMG_LoadTexture(renderer, "assets/game_over.png");
+
 
     SDL_QueryTexture(pelotita_buena, NULL, NULL, &rect_pelotita.w, &rect_pelotita.h);
     rect_pelotita.x = 0;

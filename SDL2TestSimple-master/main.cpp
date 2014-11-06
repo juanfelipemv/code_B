@@ -76,9 +76,19 @@ int main( int argc, char* args[] )
             }
         }
 
+            //Set texture based on current keystate
+				const Uint8* teclas_presionadas = SDL_GetKeyboardState( NULL );
+				if( teclas_presionadas[ SDL_SCANCODE_UP ] )
+				{
+					rect_character.y-=1;
+				}
+
+
         SDL_RenderCopy(renderer, background, NULL, &rect_background);
         SDL_RenderCopy(renderer, character, NULL, &rect_character);
         SDL_RenderPresent(renderer);
+
+        SDL_Delay(16.66);
     }
 
 	return 0;

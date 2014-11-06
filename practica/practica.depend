@@ -1,0 +1,22 @@
+# depslib dependency file v1.0
+1415250911 source:c:\users\juan felipe\desktop\codeblock proyects\practica\main.cpp
+	<iostream>
+	<list>
+	"ford.h"
+	"nissan.h"
+
+1415250678 c:\users\juan felipe\desktop\codeblock proyects\practica\include\ford.h
+	"carro.h"
+
+1415250997 c:\users\juan felipe\desktop\codeblock proyects\practica\include\carro.h
+	<iostream>
+
+1415251657 c:\users\juan felipe\desktop\codeblock proyects\practica\include\nissan.h
+	"carro.h"
+
+1415251069 source:c:\users\juan felipe\desktop\codeblock proyects\practica\src\carro.cpp
+	"carro.h"
+
+1415251293 source:c:\users\juan felipe\desktop\codeblock proyects\practica\src\ford.cpp
+	"ford.h"
+
