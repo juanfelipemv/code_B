@@ -4,12 +4,17 @@
 #include<iostream>
 #include<cstdlib>
 #include<list>
-
+#include "pelotitas_manager.h"
+#include <cstdio>
+#include <time.h>
 using namespace std;
 
+int frames;
+int contador;
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Event Event;
+pelotitas_manager manager;
 SDL_Texture *background,*background2,*game_background,*game_background2, *pelotita_buena, *pelotita_mala, *gameover_background;
 SDL_Rect rect_background,rect_background2, rect_pelotita, rect_gameover_background;
 int boom;
@@ -26,12 +31,7 @@ void gameover(){
             }
             if(Event.type == SDL_KEYDOWN)
             {
-
-
             }
-
-
-
         }
 
         SDL_RenderCopy(renderer, background2, NULL, &rect_background2);
@@ -43,10 +43,14 @@ void gameover(){
 
 void loopJuego()
 {
+
+
     list<float> pelotitas_y;
     pelotitas_y.push_back(0);
-    pelotitas_y.push_back(90);
-    pelotitas_y.push_back(180);
+    pelotitas_y.push_back(40);
+    pelotitas_y.push_back(100);
+
+
 
     bool is_visible=true;
     while(true)
@@ -58,10 +62,10 @@ void loopJuego()
                 exit(0);
             }
 
-            if( pelotitas_y.empty()){
+           if(contador==0)
+        {
             gameover();
-            }
-
+        }
 
             if(Event.type == SDL_KEYDOWN)
             {
@@ -75,44 +79,38 @@ void loopJuego()
                 SDL_GetMouseState( &click_x, &click_y );
                 cout<<click_x<<","<<click_y<<endl;
 
-                for(list<float>::iterator i=pelotitas_y.begin();
-                        i!=pelotitas_y.end();
-                        i++)
+                for(int c = 0; c<manager.pelotitas.size(); c++)
                 {
-                    if(click_x<66+(*i) && click_x>(*i) && click_y<66 && click_y>0)
+                    bool dimension_x = click_x>manager.pelotitas.at(c).rect.x &&
+                         click_x<manager.pelotitas.at(c).rect.x+manager.pelotitas.at(c).rect.w;
+                    bool dimension_y = click_y>manager.pelotitas.at(c).rect.y &&
+                         click_y<manager.pelotitas.at(c).rect.y+manager.pelotitas.at(c).rect.h;
+
+                    if(dimension_x && dimension_y)
                     {
-                        pelotitas_y.erase(i);
-                        i--;
-                        boom++;
-                        cout<<boom;
-                        break;
+                        manager.pelotitas.at(c).rect.y=9999;
+                        contador--;
+                        cout<<"contador en :" <<contador<< endl;
                     }
+
+
                 }
             }
-
         }
 
+        if(frames == 600)
+        frames = 0;
+        frames++;
+
+        manager.mover(frames);
 
 //velocidad
-        for(list<float>::iterator i=pelotitas_y.begin();i!=pelotitas_y.end();i++)
-        {
-            (*i)+=0.1;
-            if((*i)>=500)
-                (*i)=0;
-        }
-
         SDL_RenderCopy(renderer, game_background, NULL, &rect_background);
-        rect_pelotita.y=0;
-        SDL_RenderCopy(renderer, pelotita_buena, NULL, &rect_pelotita);
+         manager.render();
 
 //posicion y
-        for(list<float>::iterator i=pelotitas_y.begin();
-                i!=pelotitas_y.end();
-                i++)
-        {
-            rect_pelotita.x=(*i);
-            SDL_RenderCopy(renderer, pelotita_mala, NULL, &rect_pelotita);
-        }
+        int posicion_y=20;
+
 
         SDL_RenderPresent(renderer);
     }
@@ -120,6 +118,9 @@ void loopJuego()
         {
          SDL_RenderCopy(renderer, gameover_background, NULL, &rect_gameover_background);
         }
+
+
+
 }
 
 void loopMenu()
@@ -143,6 +144,7 @@ void loopMenu()
 
         }
 
+
         SDL_RenderCopy(renderer, background, NULL, &rect_background);
         SDL_RenderPresent(renderer);
     }
@@ -151,6 +153,8 @@ void loopMenu()
 
 int main( int argc, char* args[] )
 {
+    frames=0;
+    srand(time(NULL));
     //Init SDL
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
@@ -163,6 +167,18 @@ int main( int argc, char* args[] )
     }
     //SDL Renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+
+    int y1 = rand( ) % 20 + 1;
+    int y2 = rand( ) % 20 + 1;
+    int y3 = rand( ) % 20 + 1;
+
+    manager.crearPelotita(y1*10,80,renderer);
+    manager.crearPelotita(y2*10,160,renderer);
+    manager.crearPelotita(y3*10,235,renderer);
+    manager.crearPelotita(y3*10,55,renderer);
+    manager.crearPelotita(y3*10,15,renderer);
+    manager.crearPelotita(y3*10,120,renderer);
+    contador = manager.pelotitas.size();
     if (renderer == NULL)
     {
         std::cout << SDL_GetError() << std::endl;
@@ -194,9 +210,9 @@ int main( int argc, char* args[] )
     pelotita_mala = IMG_LoadTexture(renderer,"assets/pelotita_mala.png");
 
 
-    SDL_QueryTexture(pelotita_buena, NULL, NULL, &rect_pelotita.w, &rect_pelotita.h);
     rect_pelotita.x = 0;
     rect_pelotita.y = 0;
+
 
     loopMenu();
 
