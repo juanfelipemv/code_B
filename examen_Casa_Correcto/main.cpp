@@ -69,6 +69,7 @@ void tiro(int e,int r)
 {
     tablero[e][r]="O";
 }
+
 void tiroAcertado(int e,int r)
 {
     tablero[e][r]="X";
